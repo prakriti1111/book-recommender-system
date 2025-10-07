@@ -23,29 +23,38 @@ def index():
 def recommend_ui():
     return render_template('recommend.html')
 
-@app.route("/recommend_books",methods=['POST'])
+@app.route("/recommend_books", methods=['POST'])
 def recommend():
     user_input = request.form.get('user_input')
-    index = np.where(pt.index==user_input)[0][0]
-    distances = similarity_scores[index]
-    similar_items = sorted(list(enumerate(similarity_scores[index])),key=lambda x:x[1],reverse=True)[1:6]
+    
+    if user_input not in pt.index:
+        return render_template('recommend.html', data=[], error="Book not found. Please try another title.")
 
-    data=[]
+    index = np.where(pt.index == user_input)[0][0]
+    distances = similarity_scores[index]
+    similar_items = sorted(list(enumerate(distances)), key=lambda x: x[1], reverse=True)[1:6]
+
+    data = []
 
     for i in similar_items:
         item = []
-        temp_df = books[books['Book-Title']==pt.index[i[0]]]
-        item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Title'].values))
-        item.extend(list(temp_df.drop_duplicates('Book-Title')['Book-Author'].values))
-        image_url = temp_df.drop_duplicates('Book-Title')['Image-URL-M'].values
-        if image_url.startswith("http://"):
-            image_url = image_url.replace("http://", "https://")
-        #item.extend(list(temp_df.drop_duplicates('Book-Title')['Image-URL-M'].values))
-        item.extend(list(image_url))
+        temp_df = books[books['Book-Title'] == pt.index[i[0]]].drop_duplicates('Book-Title')
 
+        title = temp_df['Book-Title'].values[0]
+        author = temp_df['Book-Author'].values[0]
+        image_url = temp_df['Image-URL-M'].values[0]
+
+        if isinstance(image_url, str):
+            if image_url.startswith("http://"):
+                image_url = image_url.replace("http://", "https://")
+        else:
+            image_url = ""
+
+        item.extend([title, author, image_url])
         data.append(item)
+
     print(data)
-    return render_template('recommend.html',data=data)
+    return render_template('recommend.html', data=data)
 
 if __name__ == '__main__' :
     app.run(debug=True)
