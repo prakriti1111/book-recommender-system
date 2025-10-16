@@ -5,7 +5,7 @@ It recommends books similar to the one entered by the user, based on collaborati
 
 ---
 ## Deployed Link
-https://book-recommender-system-jnbr.onrender.com/
+https://book-recommender-system-jnbr.onrender.com
 
 ---
 
