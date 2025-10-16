@@ -4,6 +4,10 @@ A web-based **Book Recommendation System** built with **Flask**, **Python**, and
 It recommends books similar to the one entered by the user, based on collaborative filtering.
 
 ---
+## Deployed Link
+https://book-recommender-system-jnbr.onrender.com/
+
+---
 
 ## 🚀 Features
 
